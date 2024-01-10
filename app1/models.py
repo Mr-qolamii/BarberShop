@@ -10,7 +10,8 @@ class UserManager(BaseUserManager):
     def _create_user(self, username, tell, password, **extra_fields):
         """ create user """
         tell = validate_international_phonenumber(tell)
-        user = self.model(username=username, tell=tell, password=password, **extra_fields)
+        user = self.model(username=username, tell=tell, **extra_fields)
+        user.set_password(password)
         user.save()
         return user
 
