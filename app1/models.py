@@ -34,7 +34,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     age = models.DateField()
     created_date = models.DateTimeField(auto_now_add=True)
 
-    objects = UserManager
+    USERNAME_FIELD = "username"
+
+    objects = UserManager()
 
     def __str__(self):
         return self.username
