@@ -1,7 +1,11 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import validate_international_phonenumber
 from phonenumber_field.modelfields import PhoneNumberField
+from django.dispatch.dispatcher import receiver
+from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
 from django.db import models
+from phonenumbers.unicode_util import Category
 
 
 class UserManager(BaseUserManager):
@@ -29,10 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """this is class for user model """
 
     username = models.CharField(max_length=25, unique=True)
-    firstname = models.CharField(max_length=25)
-    lastname = models.CharField(max_length=25)
     tell = PhoneNumberField(unique=True)
-    age = models.DateField()
     created_date = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = "username"
@@ -41,3 +42,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name="profiles")
+    profile_pic = models.ImageField()
+    firstname = models.CharField(max_length=25)
+    lastname = models.CharField(max_length=25)
+    age = models.DateField()
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
