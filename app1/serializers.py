@@ -28,11 +28,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSetPasswordSerializer(serializers.ModelSerializer):
-    password_2 = serializers.CharField(write_only=True)
+    password_now = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(style={'input_type': 'password'})
 
     class Meta:
         model = User
-        fields = ['tell', 'password', 'password_2']
+        fields = ['password', 'password_now', 'password_confirm']
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_2']:
@@ -48,3 +49,6 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
+class RestPasswordSerializer(serializers.Serializer):
+    username_1 = serializers.CharField()
+    password_2 = serializers.CharField()
