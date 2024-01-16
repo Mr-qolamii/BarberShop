@@ -1,11 +1,11 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from phonenumber_field.modelfields import validate_international_phonenumber
 from phonenumber_field.modelfields import PhoneNumberField
+from django.core.exceptions import ValidationError
 from django.dispatch.dispatcher import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 from django.db import models
-from phonenumbers.unicode_util import Category
 
 
 class UserManager(BaseUserManager):
@@ -13,17 +13,18 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, username, tell, password, **extra_fields):
         """ create user """
-        tell = validate_international_phonenumber(tell)
-        user = self.model(username=username, tell=tell, **extra_fields)
-        user.set_password(password)
-        user.save()
-        return user
+        if validate_international_phonenumber(tell) is None:
+            user = self.model(username=username, tell=tell, **extra_fields)
+            user.set_password(password)
+            user.save()
+            return user
+        raise ValidationError("Invalid phone number")
 
     def create_user(self, username, tell, password, **extra_field):
 
         return self._create_user(username, tell, password, **extra_field)
 
-    def create_super_user(self, username, tell, password, **extra_fields):
+    def create_superuser(self, username, tell, password, **extra_fields):
         extra_fields.setdefault("is_superuser", True)
 
         return self._create_user(username, tell, password, **extra_fields)
@@ -37,6 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_date = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["tell"]
 
     objects = UserManager()
 
@@ -46,10 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name="profiles")
-    profile_pic = models.ImageField()
-    firstname = models.CharField(max_length=25)
-    lastname = models.CharField(max_length=25)
-    age = models.DateField()
+    profile_pic = models.ImageField(default="default.jpg", upload_to="image/profile_pic")
+    firstname = models.CharField(max_length=25, blank=True, null=True)
+    lastname = models.CharField(max_length=25, blank=True, null=True)
+    age = models.DateField(blank=True, null=True)
 
 
 @receiver(post_save, sender=User)
