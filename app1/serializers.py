@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'tell', 'password', 'password_2']
-        extra_kwargs = {'password': {'style': {'input_type': 'password'} }}
+        extra_kwargs = {'password': {'style': {'input_type': 'password'}}}
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_2']:
@@ -46,7 +46,7 @@ class UserSetPasswordSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField()
+    password = serializers.CharField(style={'input_type': 'password'})
 
 
 class RestPasswordSerializer(serializers.Serializer):
