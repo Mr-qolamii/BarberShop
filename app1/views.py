@@ -6,10 +6,13 @@ from django.contrib.auth import authenticate, login, logout
 from Celery.tasks import *
 from .models import *
 from .serializers import *
+from .permissions import *
 
 
 class SignUPView(generics.GenericAPIView):
     serializer_class = UserSerializer
+
+    permission_classes = [NotAuthenticated]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -21,14 +24,17 @@ class SignUPView(generics.GenericAPIView):
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
+    permission_classes = [NotAuthenticated]
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = authenticate(serializer.validated_data['username'], serializer.validated_data['password'])
+        user = authenticate(self.request, username=serializer.validated_data['username'],
+                                            password=serializer.validated_data['password'])
         if user is not None:
             login(request, user)
             return Response({'detail': 'login success'}, status=status.HTTP_200_OK)
-        return Response({'detail': 'not login success'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Login is not successful'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogOutView(generics.GenericAPIView):
