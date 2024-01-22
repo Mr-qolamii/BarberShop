@@ -5,11 +5,11 @@ from .tasks import *
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password_2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
     class Meta:
         model = User
-        fields = ['username', 'tell', 'password', 'password_2']
+        fields = ['username', 'tell', 'password', 'password_confirm']
         extra_kwargs = {
             'password': {
                 'style':
@@ -35,7 +35,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['user', 'profile_pic', 'firstname', 'lastname', 'age']
-        extra_kwargs = {'user': {"read_only": True}}
+        extra_kwargs = {'user': {"read_only": True}, 'profile_pic': {"required": False},
+                        'firstname': {"required": False},
+                        'lastname': {"required": False}, 'age': {"required": False}}
 
 
 class UserSetPasswordSerializer(serializers.Serializer):
