@@ -54,7 +54,16 @@ class Profile(models.Model):
     age = models.DateField(blank=True, null=True)
 
 
+class Device(models.Model):
+     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="Devices")
+     device_name = models.CharField(max_length=40)
+     login_time = models.DateTimeField(auto_now_add=True)
+     is_active = models.BooleanField()
+
+
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+
