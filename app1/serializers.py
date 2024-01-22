@@ -1,5 +1,7 @@
+from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
-from app1.models import User, Profile
+
+from .tasks import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,7 +10,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'tell', 'password', 'password_2']
-        extra_kwargs = {'password': {'style': {'input_type': 'password'}}}
+        extra_kwargs = {
+            'password': {
+                'style':
+                    {'input_type': 'password'},
+                'write_only': True
+            },
+            'tell': {
+                'write_only': True
+            }
+        }
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_2']:
@@ -17,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        return create_user.dlay(**validated_data)
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -27,21 +38,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         extra_kwargs = {'user': {"read_only": True}}
 
 
-class UserSetPasswordSerializer(serializers.ModelSerializer):
-    password_now = serializers.CharField(write_only=True)
+class UserSetPasswordSerializer(serializers.Serializer):
+    password_old = serializers.CharField()
+    password_now = serializers.CharField(style={'input_type': 'password'})
     password_confirm = serializers.CharField(style={'input_type': 'password'})
 
-    class Meta:
-        model = User
-        fields = ['password', 'password_now', 'password_confirm']
-
     def validate(self, attrs):
-        if attrs['password'] != attrs['password_2']:
+        if attrs['password_now'] != attrs['password_confirm']:
             raise serializers.ValidationError('passwords do not match')
         return attrs
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -49,6 +54,21 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(style={'input_type': 'password'})
 
 
-class RestPasswordSerializer(serializers.Serializer):
-    username_1 = serializers.CharField()
-    password_2 = serializers.CharField()
+class ResetPasswordSerializer(serializers.Serializer):
+    username_now = serializers.CharField()
+    password_confirm = serializers.CharField()
+
+    def validate(self, attrs):
+        if attrs['password_now'] != attrs['password_confirm']:
+            raise serializers.ValidationError('passwords do not match')
+        return attrs
+
+
+class SendSMSForResetPasswordSerializer(serializers.Serializer):
+    tell = PhoneNumberField()
+
+    def validate(self, attrs):
+        if User.objects.get(tell=attrs["tell"]).exist():
+            return attrs
+        else:
+            raise serializers.ValidationError('tel not exist')
