@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
-from django.utils import timezone
-from rest_framework import status, permissions
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, permissions
 from rest_framework.viewsets import generics
 from rest_framework.response import Response
+from django.utils import timezone
 
 from .tasks import *
 from .serializers import *
