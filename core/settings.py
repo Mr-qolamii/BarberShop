@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+SITE_ID = 1
 
 # Application definition
 
@@ -37,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'phonenumber_field',
     'rest_framework',
     'app1.apps.App1Config',
     'app2.apps.App2Config',
-    'app3.apps.App3Config'
+    'app3.apps.App3Config',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
