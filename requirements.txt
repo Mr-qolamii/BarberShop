@@ -3,3 +3,4 @@ phonenumbers==8.13.27
 django-phonenumber-field==7.3.0
 djangorestframework==3.14.0
 Pillow
+django-celery-results==2.5.1
