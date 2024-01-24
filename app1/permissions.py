@@ -5,4 +5,5 @@ class NotAuthenticated(DjangoModelPermissions):
     def has_permission(self, request, view):
         if request.user.is_authenticated:
             return False
-        return True
+        else:
+            return True
