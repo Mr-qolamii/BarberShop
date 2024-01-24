@@ -5,13 +5,18 @@ from rest_framework.filters import *
 
 from .models import *
 from .serializers import *
+from .permissions import *
 
 
 class PostViewSet(ModelViewSet):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUserOrReadOnly]
     queryset = Post.objects.all().order_by('-date')
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    search_fields = ["location", "user", "title"]
-    ordering_fields = ["price"]
-    filterset_fields = {"location": ["exact", "in"], "price": ["lt", "gt"]}
+    filter_backends = [SearchFilter]
+    search_fields = ["title"]
     serializer_class = PostSerializer
+
+
+class CommentViewSet(ModelViewSet):
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Comment.objects.all().order_by('-date')
+    serializer_class = CommentSerializer
