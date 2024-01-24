@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -14,7 +15,6 @@ class Post(models.Model):
     img_9 = models.ImageField(upload_to='image/post/', blank=True, null=True)
     img_10 = models.ImageField(upload_to='image/post/', blank=True, null=True)
     title = models.CharField(max_length=100)
-    category = models.CharField(max_length=50)
     description = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
 
@@ -22,4 +22,5 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.TextField()
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
