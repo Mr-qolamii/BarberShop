@@ -145,3 +145,23 @@ REST_FRAMEWORK = {
     ]
 }
 
+
+# celery configuration
+CELERY_TIMEZONE = 'Asia/Tehran'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = 'mongodb://localhost:32017'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_INCLUDE = ["app1.tasks", "app2.tasks", "app3.tasks"]
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ENABLE_UTC = True
+SECRET_RESULT_EXPIRES = 3600
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+
+# CACHES = {
+#  "default" : 'django.core.cache.backends.db.DataCache',
+#  "LOCATION" : 'my_cache_table',
+# }
