@@ -1,4 +1,3 @@
-import os
 
 from core.celery import app
 from .models import *
