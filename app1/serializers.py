@@ -22,13 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password_2']:
+        if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError('passwords do not match')
-        attrs.pop('password_2', None)
+        attrs.pop('password_confirm', None)
         return attrs
 
     def create(self, validated_data):
-        return create_user.dlay(**validated_data)
+        return create_user.apply_async(kwargs=validated_data).get()
 
 
 class ProfileSerializer(serializers.ModelSerializer):
