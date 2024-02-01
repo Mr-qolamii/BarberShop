@@ -22,7 +22,3 @@ def post_view(**kwargs):
 def post_like(**kwargs):
     return PostLike.objects.create(**kwargs)
 
-
-@app.task
-def comment_like(**kwargs):
-    return CommentLike.objects.create(**kwargs)
