@@ -66,7 +66,7 @@ class SendLinkForResetPasswordAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        send_sms.dlay(tell=serializer.validated_data['tell'], msg=self.request.user.get_session_auth_hash())
+        send_sms.delay(tell=serializer.validated_data['tell'], msg=User.objects.get(tell=serializer.validated_data['tell']).get_session_auth_hash())
         return Response({'detail': 'The link has been sent to you'})
 
 

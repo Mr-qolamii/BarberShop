@@ -67,10 +67,10 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class SendSMSForResetPasswordSerializer(serializers.Serializer):
-    tell = PhoneNumberField()
+    tell = serializers.CharField()
 
     def validate(self, attrs):
-        if User.objects.get(tell=attrs["tell"]).exist():
+        if User.objects.get(tell=attrs['tell']):
             return attrs
         else:
             raise serializers.ValidationError('tel not exist')
