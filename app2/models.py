@@ -38,7 +38,3 @@ class PostLike(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-class CommentLike(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
