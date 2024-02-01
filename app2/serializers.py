@@ -12,7 +12,7 @@ class PostSerializer(ModelSerializer):
                   "title", "description"]
 
     def create(self, validated_data):
-        return create_post.apply_async(kwargs=validated_data)
+        return create_post.apply_async(kwargs=validated_data).get()
 
 
 class CommentSerializer(ModelSerializer):
@@ -23,4 +23,6 @@ class CommentSerializer(ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context.get('request').user
-        return create_comment.apply_async(kwargs=validated_data)
+        return create_comment.apply_async(kwargs=validated_data).get()
+
+
