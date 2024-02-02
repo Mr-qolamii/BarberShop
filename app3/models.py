@@ -20,7 +20,7 @@ class Reservation(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, to_field='username')
     date = models.DateTimeField()
     is_canceled = models.BooleanField(default=False)
-    is_doing = models.BooleanField(default=False)
+    is_done = models.BooleanField(default=False)
 
     contact = models.CharField(max_length=30, choices=choices)
 
