@@ -10,7 +10,8 @@ route = SimpleRouter()
 route.register("posts", PostViewSet, 'posts')
 
 urlpatterns = [
-    path('posts/<int:pk>/comments/', CommentAPIView.as_view(), name='post_comments')
+    path('posts/<int:pk>/comments/', CommentAPIView.as_view(), name='post_comments'),
+    path('posts/<int:pk>/likes/', PostLike.as_view(), name='post_likes'),
 
 ]
 
