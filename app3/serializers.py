@@ -24,4 +24,4 @@ class ReservationsSerializer(ModelSerializer):
 class ReservationsForAdminSerializer(ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ['user', 'date', 'contact', 'is_canceled', 'is_doing']
+        fields = ['user', 'date', 'contact', 'is_canceled', 'is_done']
