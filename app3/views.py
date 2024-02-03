@@ -1,8 +1,9 @@
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.generics import UpdateAPIView, ListAPIView
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 from rest_framework import status
 
 from .permissions import *
@@ -26,7 +27,6 @@ class AllReservation(ListAPIView):
     queryset = Reservation.objects.all().order_by('date')
     serializer_class = ReservationsForAdminSerializer
     permission_classes = [IsAdmin]
-    filter_backends = [OrderingFilter]
-    ordering_fields = ["is_canceled", "is_done"]
-
+    filter_backends = [DjangoFilterBackend]
+    fields = ["is_canceled", "is_done"]
 
