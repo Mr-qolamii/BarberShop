@@ -49,4 +49,4 @@ class PostLike(generics.ListCreateAPIView):
         kwargs['post'] = kwargs['pk']
         if not PostLike.objects.filter(post=self.kwargs['pk'], user=kwargs['user']).exists():
             post_like.apply_async(kwargs=kwargs)
-        return Response({"detail": True})
+        return Response({"is liked": True})
