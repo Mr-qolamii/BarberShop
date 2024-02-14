@@ -1,4 +1,4 @@
-from more_itertools import ilen
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from .models import *
@@ -26,3 +26,11 @@ class CommentSerializer(ModelSerializer):
         return create_comment.apply_async(kwargs=validated_data).get()
 
 
+class PostLikeSerializer(ModelSerializer):
+    class Meta:
+        model = PostLike
+        fields = ["post", "user"]
+        extra_kwargs = {'user': {'read_only': True}, 'post': {'read_only': True}}
+
+    def create(self, validated_data):
+        return post_like.apply_async(kwargs=validated_data).get()
