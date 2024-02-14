@@ -1,4 +1,7 @@
+from builtins import any
+
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.sessions.models import Session
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, permissions
 from rest_framework.viewsets import generics
@@ -49,15 +52,19 @@ class ChangePasswordAPIView(generics.GenericAPIView):
     serializer_class = UserSetPasswordSerializer
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, token):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = User.objects.get(id=request.user.id)
-        if user.check_password(serializer.validated_data['password_old']):
-            user.set_password(serializer.validated_data['password_now'])
-            user.save()
-            return Response({'detail': 'password set success'}, status=status.HTTP_200_OK)
-        raise ValidationError({'detail': 'password is false'})
+        if Session.objects.filter(session_key=token).exists():
+            user = User.objects.get()
+            if user.check_password(serializer.validated_data['password_old']):
+                user.set_password(serializer.validated_data['password_now'])
+                user.save()
+                return Response({'detail': 'password set success'}, status=status.HTTP_200_OK)
+            else:
+                raise ValidationError({'detail': 'password is false'})
+        else:
+            raise ValidationError({"detail": 'token not valid'})
 
 
 class SendLinkForResetPasswordAPIView(generics.GenericAPIView):
@@ -84,10 +91,11 @@ class ResetPasswordAPIView(generics.GenericAPIView):
         raise ValidationError({'detail': 'password not match'})
 
 
-class UpdateProfileAPIView(generics.UpdateAPIView):
+class UpdateProfileAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         obj = Profile.objects.get(pk=self.request.user.pk)
         return obj
+
