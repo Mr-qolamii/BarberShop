@@ -9,21 +9,24 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
+from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+config = Config(RepositoryEnv('core/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r%ked$($m2vkiju49&pyn4lndvm(x46f1+858ntdxd1msnrj$p'
+SECRET_KEY = config.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.get('DEBUG', default=False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -45,6 +48,8 @@ INSTALLED_APPS = [
     'app2.apps.App2Config',
     'app3.apps.App3Config',
     'django_celery_results',
+
+
 ]
 
 MIDDLEWARE = [
@@ -125,7 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'source/'
 STATIC_ROOT = BASE_DIR / 'static/'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/file/'
@@ -150,19 +155,17 @@ REST_FRAMEWORK = {
 CELERY_TIMEZONE = 'Asia/Tehran'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_RESULT_SERIALIZER = 'pickle'
-CELERY_ACCEPT_CONTENT = ['application/json', 'application/x-python-serialize']
+CELERY_ACCEPT_CONTENT = ['pickle', 'application/json', 'application/x-python-serialize']
 CELERY_EVENT_SERIALIZER = 'pickle'
 CELERY_ENABLE_UTC = True
 SECRET_RESULT_EXPIRES = 3600
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 * 1024 * 1024
 
 
-# CACHES = {
-#  "default" : 'django.core.cache.backends.db.DataCache',
-#  "LOCATION" : 'my_cache_table',
-# }
+
