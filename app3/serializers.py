@@ -9,12 +9,16 @@ from .tasks import *
 class ReservationsSerializer(ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ['user', 'contact', 'date']
+        fields = ['pk','user', 'contact', 'date', 'is_canceled', 'is_done']
         extra_kwargs = {
-            'user': {'read_only': True},}
+            'user': {'read_only': True},
+            'pk': {'read_only': True},
+            'is_done': {'read_only': True},
+            'is_canceled': {'read_only': True},
+        }
 
     def create(self, validated_data):
-        if Reservation.objects.filter(user=self.context['request'].user, is_canceled=False, is_doing=False).exists():
+        if Reservation.objects.filter(user=self.context['request'].user, is_canceled=False, is_done=False).exists():
             raise serializers.ValidationError('reservation already exists')
         else:
             validated_data['user'] = self.context.get('request').user
@@ -25,3 +29,4 @@ class ReservationsForAdminSerializer(ModelSerializer):
     class Meta:
         model = Reservation
         fields = ['user', 'date', 'contact', 'is_canceled', 'is_done']
+
