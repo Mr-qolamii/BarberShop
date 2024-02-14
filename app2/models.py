@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Post(models.Model):
-    video = models.FileField(upload_to='video/post/', blank=True, null=True)
+    video = models.FileField(upload_to='videos/posts/', blank=True, null=True)
     img_1 = models.ImageField(upload_to='image/post/', blank=True, null=True)
     img_2 = models.ImageField(upload_to='image/post/', blank=True, null=True)
     img_3 = models.ImageField(upload_to='image/post/', blank=True, null=True)
