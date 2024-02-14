@@ -3,7 +3,7 @@ from core.celery import app
 from .models import *
 
 
-@app.task
+@app.task(serializer='pickle')
 def create_post(**kwargs):
     return Post.objects.create(**kwargs)
 
@@ -21,4 +21,9 @@ def post_view(**kwargs):
 @app.task
 def post_like(**kwargs):
     return PostLike.objects.create(**kwargs)
+
+
+@app.task
+def post_like_delete(**kwargs):
+    return PostLike.objects.get(**kwargs).delete()
 
