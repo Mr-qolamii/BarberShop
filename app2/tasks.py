@@ -1,11 +1,5 @@
-
 from core.celery import app
 from .models import *
-
-
-@app.task(serializer='pickle')
-def create_post(**kwargs):
-    return Post.objects.create(**kwargs)
 
 
 @app.task
