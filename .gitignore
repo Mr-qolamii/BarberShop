@@ -152,3 +152,5 @@ cython_debug/
 *.png
 *.jpg
 *.jpeg
+*.mp4
+*.webm
