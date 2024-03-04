@@ -57,7 +57,7 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class ResetPasswordSerializer(serializers.Serializer):
-    username_now = serializers.CharField()
+    password_now = serializers.CharField()
     password_confirm = serializers.CharField()
 
     def validate(self, attrs):
