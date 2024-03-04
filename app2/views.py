@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.viewsets import generics, ModelViewSet
 from rest_framework.response import Response
 from django_filters.rest_framework import *
@@ -34,7 +35,7 @@ class CommentAPIView(generics.ListCreateAPIView):
         return Response(data=serializer.data)
 
 
-class PostLike(generics.ListCreateAPIView):
+class PostLikeAPIView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
@@ -54,3 +55,12 @@ class PostLike(generics.ListCreateAPIView):
         else:
             post_like.apply_async(kwargs={"post_id": kwargs['pk'], "user": request.user})
             return Response({"is liked ": True}, status=status.HTTP_200_OK)
+
+
+class PostViewsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        views_cont = PostViews.objects.filter(post=self.kwargs['pk']).count()
+        return Response({"views": views_cont})
+
