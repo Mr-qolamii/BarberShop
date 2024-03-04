@@ -11,7 +11,8 @@ route.register("posts", PostViewSet, 'posts')
 
 urlpatterns = [
     path('posts/<int:pk>/comments/', CommentAPIView.as_view(), name='post_comments'),
-    path('posts/<int:pk>/likes/', PostLike.as_view(), name='post_likes'),
+    path('posts/<int:pk>/likes/', PostLikeAPIView.as_view(), name='post_likes'),
+    path('posts/<int:pk>/views/', PostViewsAPIView.as_view(), name='post_views'),
 
 ]
 
