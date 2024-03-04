@@ -1,16 +1,32 @@
+from random import randint
+from kavenegar import KavenegarAPI, APIException, HTTPException
+from django.conf import settings
 
+from core import celery
 from core.celery import app
 from .models import *
 
 
 @app.task
-def send_sms(tell: str, msg: str) -> None:
+def send_sms(request, tell: str, ) -> None:
     # api send sms to (tell)
+    code = randint(1043, 9781)
     message = f""" 
-    reset password link
-    {msg}
+    reset password code
+    {code}
     """
-    print(message)
+    api_key = settings.KAVENEGAR_API_KEY
+    try:
+        api = KavenegarAPI(api_key)
+        params = {
+            'receptor': tell,  # multiple mobile number, split by comma
+            'message':  """ reset password code: \n {code}""",
+        }
+        response = api.sms_send(params)
+    except APIException as e:
+        raise e
+    except HTTPException as e:
+        raise e
 
 
 @app.task
