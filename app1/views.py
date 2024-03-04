@@ -73,7 +73,7 @@ class SendLinkForResetPasswordAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        send_sms.delay(tell=serializer.validated_data['tell'], msg=User.objects.get(tell=serializer.validated_data['tell']).get_session_auth_hash())
+        send_sms.delay(request, tell=serializer.validated_data['tell'])
         return Response({'detail': 'The link has been sent to you'})
 
 
@@ -84,11 +84,9 @@ class ResetPasswordAPIView(generics.GenericAPIView):
         self.request.user.check_password()
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data['password'] == serializer.validated_data['password_2']:
-            self.request.user.set_password(serializer.validated_data['password'])
-            return Response({'detail': 'set password success'}, status=status.HTTP_200_OK)
-
-        raise ValidationError({'detail': 'password not match'})
+        # change celery data base for change password
+        User.objects.get(tell='').set_password(serializer.validated_data['password_now'])
+        return Response({'detail': 'set password success'}, status=status.HTTP_200_OK)
 
 
 class UpdateProfileAPIView(generics.RetrieveUpdateAPIView):
