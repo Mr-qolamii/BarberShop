@@ -11,18 +11,16 @@ from .models import *
 def send_sms(request, tell: str, ) -> None:
     # api send sms to (tell)
     code = randint(1043, 9781)
-    message = f""" 
-    reset password code
-    {code}
-    """
+
     api_key = settings.KAVENEGAR_API_KEY
     try:
         api = KavenegarAPI(api_key)
         params = {
-            'receptor': tell,  # multiple mobile number, split by comma
-            'message':  """ reset password code: \n {code}""",
+            'receptor': tell,
+            'message':  f""" reset password code: \n {code}""",
         }
         response = api.sms_send(params)
+        print(response)
     except APIException as e:
         raise e
     except HTTPException as e:
@@ -32,7 +30,3 @@ def send_sms(request, tell: str, ) -> None:
 @app.task
 def create_user(username: str, tell: str, password: str, **extra_field) -> None:
     return User.objects.create_user(username=username, tell=tell, password=password, **extra_field)
-
-
-if __name__ == "__main__":
-    app.start()
