@@ -70,7 +70,7 @@ class SendSMSForResetPasswordSerializer(serializers.Serializer):
     tell = serializers.CharField()
 
     def validate(self, attrs):
-        if User.objects.get(tell=attrs['tell']):
+        if User.objects.get(tell=attrs['tell']) is not None:
             return attrs
         else:
             raise serializers.ValidationError('tel not exist')
