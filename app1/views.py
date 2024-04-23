@@ -1,5 +1,3 @@
-from builtins import any
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.sessions.models import Session
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +5,7 @@ from rest_framework import status, permissions
 from rest_framework.viewsets import generics
 from rest_framework.response import Response
 from django.utils import timezone
+from django.urls import reverse
 
 from .tasks import *
 from .serializers import *
@@ -74,7 +73,7 @@ class SendLinkForResetPasswordAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         send_sms.delay(request, tell=serializer.validated_data['tell'])
-        return Response({'detail': 'The link has been sent to you'})
+        return Response({'detail': 'The link has been sent to you', 'link': reverse('account:reset_password')})
 
 
 class ResetPasswordAPIView(generics.GenericAPIView):
