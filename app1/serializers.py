@@ -66,8 +66,10 @@ class ResetPasswordSerializer(serializers.Serializer):
         return attrs
 
 
-class SendSMSForResetPasswordSerializer(serializers.Serializer):
-    tell = serializers.CharField()
+class SendSMSForResetPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["tell"]
 
     def validate(self, attrs):
         if User.objects.get(tell=attrs['tell']) is not None:
