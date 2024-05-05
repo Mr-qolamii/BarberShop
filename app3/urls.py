@@ -9,6 +9,7 @@ route.register("reservations", ReservationViewSet, "reservations")
 
 urlpatterns = [
     path('allreservations/', AllReservation.as_view(), name="all_reservations"),
+    path('userreservations/', GetUserReservation.as_view(), name="user_reservations"),
 
     ]
 

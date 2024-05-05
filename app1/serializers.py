@@ -40,15 +40,24 @@ class ProfileSerializer(serializers.ModelSerializer):
                         'lastname': {"required": False}, 'age': {"required": False}}
 
 
-class UserSetPasswordSerializer(serializers.Serializer):
-    password_old = serializers.CharField()
+class UserSetPasswordSerializer(serializers.ModelSerializer):
     password_now = serializers.CharField(style={'input_type': 'password'})
     password_confirm = serializers.CharField(style={'input_type': 'password'})
 
+    class Meta:
+        model = User
+        fields = ['password', 'password_now', 'password_confirm']
+
     def validate(self, attrs):
         if attrs['password_now'] != attrs['password_confirm']:
-            raise serializers.ValidationError('passwords do not match')
-        return attrs
+            raise serializers.ValidationError('passwords confirm do not match')
+        else:
+            return attrs
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password_now'])
+        instance.save()
+        return instance
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -57,13 +66,18 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class ResetPasswordSerializer(serializers.Serializer):
-    password_now = serializers.CharField()
-    password_confirm = serializers.CharField()
+    password_now = serializers.CharField(style={'input_type': 'password'})
+    password_confirm = serializers.CharField(style={'input_type': 'password'})
 
     def validate(self, attrs):
         if attrs['password_now'] != attrs['password_confirm']:
             raise serializers.ValidationError('passwords do not match')
         return attrs
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password_now'])
+        instance.save()
+        return instance
 
 
 class SendSMSForResetPasswordSerializer(serializers.ModelSerializer):
@@ -72,7 +86,7 @@ class SendSMSForResetPasswordSerializer(serializers.ModelSerializer):
         fields = ["tell"]
 
     def validate(self, attrs):
-        if User.objects.get(tell=attrs['tell']) is not None:
+        if User.objects.filter(tell=attrs['tell']).exists():
             return attrs
         else:
             raise serializers.ValidationError('tel not exist')

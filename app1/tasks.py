@@ -8,23 +8,31 @@ from .models import *
 
 
 @app.task
-def send_sms(request, tell: str, ) -> None:
-    # api send sms to (tell)
-    code = randint(1043, 9781)
+def send_sms(request, tell: str, token: str) -> None:
 
     api_key = settings.KAVENEGAR_API_KEY
     try:
         api = KavenegarAPI(api_key)
         params = {
             'receptor': tell,
-            'message':  f""" reset password code: \n {code}""",
+            'message': f""" reset password link: \n {token}""",
         }
         response = api.sms_send(params)
-        print(response)
+        return response
     except APIException as e:
         raise e
     except HTTPException as e:
         raise e
+
+
+@app.task
+def save_device(**kwargs):
+    return Device.objects.create(**kwargs)
+
+
+@app.task
+def delete_device(**kwargs):
+    return Device.objects.get(**kwargs).delete()
 
 
 @app.task

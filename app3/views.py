@@ -1,10 +1,10 @@
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 
 from .permissions import *
 from .serializers import *
@@ -29,4 +29,14 @@ class AllReservation(ListAPIView):
     permission_classes = [IsAdmin]
     filter_backends = [DjangoFilterBackend]
     fields = ["is_canceled", "is_done"]
+
+
+class GetUserReservation(generics.RetrieveAPIView):
+    serializer_class = ReservationsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        obj = Reservation.objects.get(user=self.request.user)
+        return obj
+
 
