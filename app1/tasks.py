@@ -8,7 +8,7 @@ from .models import *
 
 
 @app.task
-def send_sms(request, tell: str, token: str) -> None:
+def send_sms(tell: str, token: str) -> None:
 
     api_key = settings.KAVENEGAR_API_KEY
     try:

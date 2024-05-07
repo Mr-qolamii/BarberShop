@@ -1,5 +1,5 @@
-from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .tasks import *
 
@@ -80,13 +80,12 @@ class ResetPasswordSerializer(serializers.Serializer):
         return instance
 
 
-class SendSMSForResetPasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["tell"]
+class SendSMSForResetPasswordSerializer(serializers.Serializer):
+    tell = serializers.CharField()
 
     def validate(self, attrs):
-        if User.objects.filter(tell=attrs['tell']).exists():
+        if (user := User.objects.get(tell=attrs['tell'])) is not None:
+            attrs['token'] = RefreshToken.for_user(user)
             return attrs
         else:
             raise serializers.ValidationError('tel not exist')
