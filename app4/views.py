@@ -1,18 +1,18 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import generics, ModelViewSet
+from rest_framework.viewsets import generics
 from rest_framework import status, viewsets
 from django_filters.rest_framework import *
 
 from app2.permissions import *
-from app3.permissions import IsAdmin
+from app3.permissions import *
 from .permissions import *
 from .serializers import *
 from .models import *
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.filter(soldout=False).order_by('-id')
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
@@ -47,9 +47,10 @@ class SoldOutListView(generics.ListAPIView):
 class CreateOrderView(generics.CreateAPIView):
         serializer_class = OrderSerializer
         permission_classes = (IsAuthenticated,)
+        queryset = Order.objects.all()
 
-        def create(self, request, pk,*args, **kwargs):
-            serializer = self.get_serializer(data={'product': pk, 'user': request.user.id})
+        def create(self, request, *args, **kwargs):
+            serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
