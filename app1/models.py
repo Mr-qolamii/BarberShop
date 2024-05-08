@@ -56,7 +56,7 @@ class Profile(models.Model):
 
 class Device(models.Model):
      user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="Devices")
-     device_name = models.CharField(max_length=40)
+     device_name = models.TextField()
      login_time = models.DateTimeField(auto_now_add=True)
      is_active = models.BooleanField()
 

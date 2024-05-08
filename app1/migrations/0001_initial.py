@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             name='Device',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('device_name', models.CharField(max_length=40)),
+                ('device_name', models.TextField()),
                 ('login_time', models.DateTimeField(auto_now_add=True)),
                 ('is_active', models.BooleanField()),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Devices', to=settings.AUTH_USER_MODEL)),
