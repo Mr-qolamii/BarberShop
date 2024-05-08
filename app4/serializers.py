@@ -12,7 +12,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['product', 'user', 'date']
+        fields = ['product', 'user', 'count', 'date']
         extera_kwargs = {'date': {"read_only": True}, }
 
 
