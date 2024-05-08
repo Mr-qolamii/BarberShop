@@ -8,12 +8,12 @@ User = get_user_model()
 
 
 class Product(models.Model):
-    file1 = models.FileField(upload_to='products')
-    file2 = models.FileField(upload_to='products')
-    file3 = models.FileField(upload_to='products')
-    file4 = models.FileField(upload_to='products')
-    file5 = models.FileField(upload_to='products')
-    file6 = models.FileField(upload_to='products')
+    file1 = models.FileField(upload_to='products',blank=True)
+    file2 = models.FileField(upload_to='products',blank=True)
+    file3 = models.FileField(upload_to='products',blank=True)
+    file4 = models.FileField(upload_to='products',blank=True)
+    file5 = models.FileField(upload_to='products',blank=True)
+    file6 = models.FileField(upload_to='products',blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     category = models.CharField(max_length=50, choices=[(1, 'machine'), (2, 'kif vasayel'), (3, 'arayeshi behdashti')])
