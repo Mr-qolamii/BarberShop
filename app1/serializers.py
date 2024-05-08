@@ -84,8 +84,8 @@ class SendSMSForResetPasswordSerializer(serializers.Serializer):
     tell = serializers.CharField()
 
     def validate(self, attrs):
-        if (user := User.objects.get(tell=attrs['tell'])) is not None:
-            attrs['token'] = RefreshToken.for_user(user)
+        if (user := User.objects.filter(tell=attrs['tell'])).exists():
+            attrs['token'] = RefreshToken.for_user(user.get(tell=attrs['tell']))
             return attrs
         else:
             raise serializers.ValidationError('tel not exist')
