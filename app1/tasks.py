@@ -2,7 +2,6 @@ from random import randint
 from kavenegar import KavenegarAPI, APIException, HTTPException
 from django.conf import settings
 
-from core import celery
 from core.celery import app
 from .models import *
 
