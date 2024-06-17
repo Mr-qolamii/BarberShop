@@ -13,6 +13,7 @@ urlpatterns = [
     path('posts/<int:pk>/comments/', CommentAPIView.as_view(), name='post_comments'),
     path('posts/<int:pk>/likes/', PostLikeAPIView.as_view(), name='post_likes'),
     path('posts/<int:pk>/views/', PostViewsAPIView.as_view(), name='post_views'),
+    path('comments/<int:pk>/', CommentUpdateAPIView.as_view(), name='comment_update'),
 
 ]
 
