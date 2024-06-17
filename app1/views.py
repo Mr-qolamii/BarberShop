@@ -1,3 +1,4 @@
+from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.permissions import IsAuthenticated
@@ -18,11 +19,14 @@ class SignUPAPIView(generics.CreateAPIView):
     permission_classes = [NotAuthenticated]
 
 
-class RegisterAPIView(TokenObtainPairView):
+class RegisterAPIView(generics.GenericAPIView):
     permission_classes = [NotAuthenticated]
+    serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        user = authenticate(request, username=request.data.get('username'), password=request.data.get('password'))
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(request, username=serializer.validated_data['username'], password=serializer.validated_data['password'])
         if user is not None:
             login(request, user)
             device = {
@@ -31,7 +35,8 @@ class RegisterAPIView(TokenObtainPairView):
                 "is_active": True
             }
             save_device.delay(**device)
-        return super().post(request, *args, **kwargs)
+            return Response(status=status.HTTP_200_OK)
+        return Response({'detail': "username or password is incorrect"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LogOutAPIView(generics.GenericAPIView):
