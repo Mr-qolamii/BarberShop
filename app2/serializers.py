@@ -8,19 +8,21 @@ from .tasks import *
 class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
-        fields = ["pk", "video", "img_1", "img_2", "img_3", "img_4", "img_5", "img_6", "img_7", "img_8", "img_9", "img_10",
+        fields = ["pk", "video", "img_1", "img_2", "img_3", "img_4", "img_5", "img_6", "img_7", "img_8", "img_9",
+                  "img_10",
                   "title", "description"]
-        extera_kwargs = {"pk": {"read_only": True}}
+        extra_kwargs = {"pk": {"read_only": True}}
 
 
 class CommentSerializer(ModelSerializer):
-
     class Meta:
         model = Comment
-        fields = ["comment", "post"]
+        fields = ["pk" ,"comment", "post", "date", "user"]
+        extra_kwargs = {"post": {"read_only": True}, "user": {"read_only": True}, "date": {"read_only": True}}
 
     def create(self, validated_data):
         validated_data['user'] = self.context.get('request').user
+        validated_data['post_id'] = self.context['request'].parser_context['kwargs']['pk']
         return create_comment.apply_async(kwargs=validated_data).get()
 
 
