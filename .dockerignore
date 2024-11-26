@@ -1,3 +1,11 @@
 env/
 media/
 static/
+venv/
+LICENSE
+*.md
+__pycache__
+install.sh
+nginx/
+*.yml
+Dockerfile
