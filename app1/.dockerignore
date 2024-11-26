@@ -1,0 +1,11 @@
+env/
+media/
+static/
+venv/
+LICENSE
+README.md
+__pycache__
+install.sh
+nginx/
+docker-compose.yml
+Dockerfile
