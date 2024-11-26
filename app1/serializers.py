@@ -32,12 +32,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    user_tell = serializers.CharField(source='user.tell', read_only=True)
+
     class Meta:
         model = Profile
-        fields = ['user', 'profile_pic', 'firstname', 'lastname', 'age']
+        fields = ['user', 'username', 'user_tell', 'profile_pic', 'firstname', 'lastname', ]
         extra_kwargs = {'user': {"read_only": True}, 'profile_pic': {"required": False},
                         'firstname': {"required": False},
-                        'lastname': {"required": False}, 'age': {"required": False}}
+                        'lastname': {"required": False}, }
 
 
 class UserSetPasswordSerializer(serializers.ModelSerializer):

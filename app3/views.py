@@ -15,7 +15,7 @@ from .models import *
 class ReservationAPIView(generics.ListCreateAPIView):
     queryset = Reservation.objects.filter(is_canceled=False, is_done=False).order_by('date')
     serializer_class = ReservationsSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
 class AllReservation(ListAPIView):

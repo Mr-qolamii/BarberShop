@@ -11,22 +11,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from datetime import timedelta
+from email.policy import default
 from pathlib import Path
-from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-config = Config(RepositoryEnv('core/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', default="dhvyssdbfiuWEGGIUWIUErtaeayrjTYgyiig5565")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config.get('DEBUG', default=False)
+DEBUG = os.environ.get('DEBUG', default=True)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -90,11 +89,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER': 'root',
-        'PASSWORD': config.get("DATABASE_PASSWORD"),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_NAME', default="django-db"),
+        'USER': os.environ.get('DB_USER', default="root"),
+        'PASSWORD': os.environ.get("DB_PASS", default="root"),
+        'HOST': os.environ.get("DB_HOST", default="localhost"),
+        'PORT': os.environ.get("DB_PORT", default="3306"),
     }
 }
 
@@ -168,14 +167,14 @@ CELERY_ACCEPT_CONTENT = ['pickle', 'application/json', 'application/x-python-ser
 CELERY_EVENT_SERIALIZER = 'pickle'
 CELERY_ENABLE_UTC = True
 SECRET_RESULT_EXPIRES = 3600
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://localhost:6379")
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+C_FORCE_ROOT = os.environ.get("C_FORCE_ROOT", default=False)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 * 1024 * 1024
 
 
 # KAVENEGAR API KEY
-KAVENEGAR_API_KEY = config.get('KAVENEGAR_API_KEY')
-
+KAVENEGAR_API_KEY = os.environ.get('KAVENEGAR_API_KEY', default="jfjdjdkjsdj")
 # simple jwt
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),

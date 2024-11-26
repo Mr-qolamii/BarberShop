@@ -6,9 +6,8 @@ Pillow
 django-celery-results==2.5.1
 django_filter==23.5
 redis==5.0.1
-pymongo==4.6.1
 kavenegar==1.1.2
 python-decouple==3.8
 djangorestframework-simplejwt==5.3.1
 mysqlclient==2.2.4
-django_filter==24.2
+gunicorn

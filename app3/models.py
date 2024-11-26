@@ -18,7 +18,8 @@ class Reservation(models.Model):
                ]
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, to_field='username')
-    date = models.DateTimeField()
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField()
     is_canceled = models.BooleanField(default=False)
     is_done = models.BooleanField(default=False)
 

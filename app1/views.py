@@ -90,10 +90,11 @@ class ResetPasswordAPIView(generics.GenericAPIView):
         return Response({'detail': 'set password success'}, status=status.HTTP_200_OK)
 
 
-class UpdateProfileAPIView(generics.RetrieveUpdateAPIView):
+class ProfileAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         obj = Profile.objects.get(pk=self.request.user.pk)
         return obj
+

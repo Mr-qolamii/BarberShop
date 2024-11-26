@@ -21,7 +21,6 @@ class UserManager(BaseUserManager):
         raise ValidationError("Invalid phone number")
 
     def create_user(self, username, tell, password, **extra_field):
-
         return self._create_user(username, tell, password, **extra_field)
 
     def create_superuser(self, username, tell, password, **extra_fields):
@@ -51,14 +50,13 @@ class Profile(models.Model):
     profile_pic = models.ImageField(default="image/profile_pic/default.jpg", upload_to=f"image/profile_pic/")
     firstname = models.CharField(max_length=25, blank=True, null=True)
     lastname = models.CharField(max_length=25, blank=True, null=True)
-    age = models.DateField(blank=True, null=True)
 
 
 class Device(models.Model):
-     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="Devices")
-     device_name = models.TextField()
-     login_time = models.DateTimeField(auto_now_add=True)
-     is_active = models.BooleanField()
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="Devices")
+    device_name = models.TextField()
+    login_time = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField()
 
 
 @receiver(post_save, sender=User)

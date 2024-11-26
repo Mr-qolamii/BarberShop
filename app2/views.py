@@ -19,6 +19,9 @@ class PostViewSet(ModelViewSet):
     search_fields = ["title", "description"]
     serializer_class = PostSerializer
 
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def retrieve(self, request, *args, **kwargs):
         if not PostViews.objects.filter(user=request.user, post=self.kwargs['pk']).exists():
             post_view.apply_async(kwargs={"post_id": self.kwargs['pk'], "user": self.request.user})
@@ -42,22 +45,14 @@ class CommentUpdateAPIView(generics.UpdateAPIView):
     serializer_class = CommentSerializer
 
 
-class PostLikeAPIView(generics.ListCreateAPIView):
+class PostLikeAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset().filter(post=self.kwargs['pk'])
-        if queryset.filter(user=request.user).exists():
-            return Response({"post likes count is": queryset.filter(post=self.kwargs['pk']).count(), "is liked": True})
-        else:
-            return Response({"post likes count is": queryset.filter(post=self.kwargs['pk']).count(), "is liked": False})
-
     def create(self, request, *args, **kwargs):
-        queryset = self.get_queryset().filter(post=self.kwargs['pk'])
         if Post.objects.filter(id=self.kwargs['pk']).exists():
-            if queryset.filter(user=request.user).exists():
+            if queryset := self.get_queryset().filter(post=self.kwargs['pk'], user=request.user).exists():
                 post_like_delete.apply_async(kwargs={"post_id": kwargs['pk'], "user": request.user})
                 return Response({"is liked ": False}, status=status.HTTP_200_OK)
             else:
@@ -67,9 +62,3 @@ class PostLikeAPIView(generics.ListCreateAPIView):
             return Response({"detail": "post not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class PostViewsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        views_cont = PostViews.objects.filter(post=self.kwargs['pk']).count()
-        return Response({"views": views_cont})
