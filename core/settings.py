@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'django.contrib.sites',
     'phonenumber_field',
     'rest_framework',
@@ -82,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -115,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 AUTH_USER_MODEL = "app1.User"
 
 # Internationalization
@@ -128,7 +127,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -154,7 +152,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-
 # celery configuration
 CELERY_TIMEZONE = 'Asia/Tehran'
 CELERY_TASK_TRACK_STARTED = True
@@ -171,7 +168,6 @@ CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://localho
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 C_FORCE_ROOT = os.environ.get("C_FORCE_ROOT", default=False)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 * 1024 * 1024
-
 
 # KAVENEGAR API KEY
 KAVENEGAR_API_KEY = os.environ.get('KAVENEGAR_API_KEY', default="jfjdjdkjsdj")
